@@ -503,7 +503,9 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 	else if (take)
 	{
 		if (targ->pain)
-			targ->pain (targ, attacker, knockback, take);
+		{
+			targ->pain(targ, attacker, knockback, take);
+		}
 	}
 
 	// add to the damage inflicted on a player this frame

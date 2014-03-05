@@ -588,14 +588,9 @@ but is called after each death and level change in deathmatch
 void InitClientPersistant (gclient_t *client)
 {
 	gitem_t		*item;
+	int			index;
 
 	memset (&client->pers, 0, sizeof(client->pers));
-
-	item = FindItem("Blaster");
-	client->pers.selected_item = ITEM_INDEX(item);
-	client->pers.inventory[client->pers.selected_item] = 1;
-
-	client->pers.weapon = item;
 
 	client->pers.health			= 100;
 	client->pers.max_health		= 100;
@@ -607,6 +602,97 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_cells		= 200;
 	client->pers.max_slugs		= 50;
 
+	//Start off with all weapons
+	item = FindItem("Blaster");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 1;
+	client->pers.weapon = item;
+	
+	item = FindItem("Shotgun");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 2;
+
+	item = FindItem("Super Shotgun");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 3;
+
+	item = FindItem("Machinegun");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 4;
+	
+	item = FindItem("Chaingun");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 5;
+
+	item = FindItem("Grenade Launcher");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 6;
+	
+	item = FindItem("Rocket Launcher");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 7;
+
+	item = FindItem("Hyperblaster");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 8;
+
+	item = FindItem("Railgun");
+	client->pers.selected_item = ITEM_INDEX(item);
+	client->pers.inventory[client->pers.selected_item] = 9;
+
+	item = FindItem("Slugs");
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		client->pers.inventory[index] += item->quantity;
+		if (client->pers.inventory[index] > client->pers.max_slugs)
+			client->pers.inventory[index] = client->pers.max_slugs;
+	}
+	
+	item = FindItem("Bullets");
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		client->pers.inventory[index] += item->quantity;
+		if (client->pers.inventory[index] > client->pers.max_bullets)
+			client->pers.inventory[index] = client->pers.max_bullets;
+	}
+
+	item = FindItem("Shells");
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		client->pers.inventory[index] += item->quantity;
+		if (client->pers.inventory[index] > client->pers.max_shells)
+			client->pers.inventory[index] = client->pers.max_shells;
+	}
+
+	item = FindItem("Cells");
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		client->pers.inventory[index] += item->quantity;
+		if (client->pers.inventory[index] > client->pers.max_cells)
+			client->pers.inventory[index] = client->pers.max_cells;
+	}
+
+	item = FindItem("Grenades");
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		client->pers.inventory[index] += item->quantity;
+		if (client->pers.inventory[index] > client->pers.max_grenades)
+			client->pers.inventory[index] = client->pers.max_grenades;
+	}
+	item = FindItem("Rockets");
+	if (item)
+	{
+		index = ITEM_INDEX(item);
+		client->pers.inventory[index] += item->quantity;
+		if (client->pers.inventory[index] > client->pers.max_rockets)
+			client->pers.inventory[index] = client->pers.max_rockets;
+	}
+	
 	client->pers.connected = true;
 }
 
