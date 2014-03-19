@@ -13,6 +13,9 @@ monster's dodge function should be called.
 static void check_dodge (edict_t *self, vec3_t start, vec3_t dir, int speed)
 {
 	vec3_t	end;
+
+	
+	
 	vec3_t	v;
 	trace_t	tr;
 	float	eta;
@@ -287,6 +290,7 @@ Fires a single blaster bolt.  Used by the blaster and hyper blaster.
 void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *surf)
 {
 	int		mod;
+	int		multi = 1;
 
 	if (other == self->owner)
 		return;
@@ -305,7 +309,31 @@ void blaster_touch (edict_t *self, edict_t *other, cplane_t *plane, csurface_t *
 		if (self->spawnflags & 1)
 		{
 			mod = MOD_HYPERBLASTER;
-			self->owner->health += 1;
+			//If the attacker has damagex2
+			if((self->owner->client && self->owner->client->damagex2))
+				multi = multi*2;
+			//If the target has damagex2
+			if((other->client && other->client->damagex2))
+				multi = multi*2;
+			//If the attacker has damageDiv2
+			if((self->owner->client && self->owner->client->damageDiv2))
+			{
+				if(multi > 1)
+				{
+					multi = multi/2;
+			
+				}
+			
+			}	
+			//If the target has damageDiv2
+			if((other->client && other->client->damageDiv2))
+			{
+				if(multi > 1)
+				{
+					multi = multi/2;
+				}
+			}
+			self->owner->health += self->dmg * multi;
 		}
 		else
 			mod = MOD_BLASTER;
@@ -672,7 +700,7 @@ void fire_rail (edict_t *self, vec3_t start, vec3_t aimdir, int damage, int kick
 				ignore = NULL;
 
 			if ((tr.ent != self) && (tr.ent->takedamage))
-				T_Damage (tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage, kick, 0, MOD_RAILGUN);
+				T_Damage (tr.ent, self, self, aimdir, tr.endpos, tr.plane.normal, damage/4, kick, 0, MOD_RAILGUN);
 		}
 
 		VectorCopy (tr.endpos, from);

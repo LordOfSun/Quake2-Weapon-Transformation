@@ -363,10 +363,88 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 	int			asave;
 	int			psave;
 	int			te_sparks;
+	gitem_t		*item;
+	int			index;
 
 	if (!targ->takedamage)
 		return;
-
+	if ((mod == MOD_R_SPLASH) && targ == attacker)
+    {
+        damage = 0; // No Damage
+        knockback *= 1.2; // Rocket Jumping Jump Height * 1.2
+    }
+	//If the attacker hits while standoff mod is active
+	if(attacker->client && attacker->client->standoff)
+	{
+		item = FindItem("Slugs");
+		if (item)
+		{
+			index = ITEM_INDEX(item);
+			targ->client->pers.inventory[index] = 0;
+			attacker->client->pers.inventory[index] = 0;
+		}
+		item = FindItem("Bullets");
+		if (item)
+		{
+			index = ITEM_INDEX(item);
+			targ->client->pers.inventory[index] = 0;
+			attacker->client->pers.inventory[index] = 0;
+		}
+		item = FindItem("Shells");
+		if (item)
+		{
+			index = ITEM_INDEX(item);
+			targ->client->pers.inventory[index] = 0;
+			attacker->client->pers.inventory[index] = 0;
+		}
+		item = FindItem("Cells");
+		if (item)
+		{
+			index = ITEM_INDEX(item);
+			targ->client->pers.inventory[index] = 0;
+			attacker->client->pers.inventory[index] = 0;
+		}
+		item = FindItem("Grenades");
+		if (item)
+		{
+			index = ITEM_INDEX(item);
+			targ->client->pers.inventory[index] = 0;
+			attacker->client->pers.inventory[index] = 0;
+		}
+		item = FindItem("Rockets");
+		if (item)
+		{
+			index = ITEM_INDEX(item);
+			targ->client->pers.inventory[index] = 0;
+			attacker->client->pers.inventory[index] = 0;
+		}
+		attacker->client->standoff = false;
+	}
+	//If the attacker has damagex2
+	if((attacker->client && attacker->client->damagex2))
+		damage = damage*2;
+	//If the target has damagex2
+	if((targ->client && targ->client->damagex2))
+		damage = damage*2;
+	//If the attacker has damageDiv2
+	if((attacker->client && attacker->client->damageDiv2))
+		if(damage > 1)
+			damage = damage/2;
+	//If the target has damageDiv2
+	if((targ->client && targ->client->damageDiv2))
+		if(damage > 1)
+			damage = damage/2;
+	
+	//If the attacker has megaBlast
+	if((attacker->client && attacker->client->megaBlast))
+	{
+		if(targ->client)
+		{
+			if(targ->client->pers.health != 1)
+				damage = 250;
+			attacker->client->megaBlast = false;
+		}
+	}
 	// friendly fire avoidance
 	// if enabled you can't hurt teammates (but you can hurt yourself)
 	// knockback still occurs
@@ -381,7 +459,16 @@ void T_Damage (edict_t *targ, edict_t *inflictor, edict_t *attacker, vec3_t dir,
 		}
 	}
 	meansOfDeath = mod;
+	
+	if(mod == MOD_RAILGUN)
+	{
+		targ->client->damagex2 = false;
+		targ->client->damageDiv2 = false;
+		targ->client->standoff = false;
+		targ->client->megaBlast = false;
+		targ->client->executioner = false;
 
+	}
 	// easy mode takes half damage
 	if (skill->value == 0 && deathmatch->value == 0 && targ->client)
 	{

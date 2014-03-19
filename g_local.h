@@ -271,6 +271,9 @@ typedef struct
 	// items
 	int			num_items;
 
+	//Is there currently a mutant
+	qboolean	curMutant;
+
 	qboolean	autosaved;
 } game_locals_t;
 
@@ -844,6 +847,7 @@ typedef struct
 	int			helpchanged;
 
 	qboolean	spectator;			// client is a spectator
+
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns
@@ -855,6 +859,7 @@ typedef struct
 	vec3_t		cmd_angles;			// angles sent over in the last command
 
 	qboolean	spectator;			// client is a spectator
+	qboolean	isMutant;
 } client_respawn_t;
 
 // this structure is cleared on each PutClientInServer(),
@@ -913,6 +918,7 @@ struct gclient_s
 	int			breather_sound;
 
 	int			machinegun_shots;	// for weapon raising
+	int         burstfire_count; 
 
 	// animation vars
 	int			anim_end;
@@ -941,6 +947,13 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+
+	//Power Up Modifications
+	qboolean	damagex2;		//When picking up a regular health pack, double the damage given and taken
+	qboolean	damageDiv2;		//When picking up an armor piece, half the damage given and taken
+	qboolean	megaBlast;		//MUTANT ONLY: When picking up a grenade, the next attack will instantly inflict immense damage (OHKO) (No secondary effects)
+	qboolean	standoff;		//When picking up rockets, the next hit onto an enemy will deplete both player's ammo
+	qboolean	executioner;	//When picking up an ammo pack, score per kill is doubled for that player
 };
 
 
@@ -1092,4 +1105,3 @@ struct edict_s
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
 };
-

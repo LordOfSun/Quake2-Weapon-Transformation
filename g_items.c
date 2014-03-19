@@ -239,6 +239,10 @@ qboolean Pickup_Bandolier (edict_t *ent, edict_t *other)
 
 qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 {
+	if (other->client->executioner)
+		return false;
+	other->client->executioner = true; 
+	/*
 	gitem_t	*item;
 	int		index;
 
@@ -311,7 +315,8 @@ qboolean Pickup_Pack (edict_t *ent, edict_t *other)
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
 		SetRespawn (ent, ent->item->quantity);
-
+	*/
+	SetRespawn(ent, 30);
 	return true;
 }
 
@@ -438,9 +443,19 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 	else if (item->tag == AMMO_SHELLS)
 		max = ent->client->pers.max_shells;
 	else if (item->tag == AMMO_ROCKETS)
+	{
 		max = ent->client->pers.max_rockets;
+		if (ent->client->standoff)
+			return false;
+		ent->client->standoff = true; 
+	}
 	else if (item->tag == AMMO_GRENADES)
+	{
 		max = ent->client->pers.max_grenades;
+		if((ent->client->megaBlast)||(!ent->client->resp.isMutant))
+			return false;
+		ent->client->megaBlast = true; 
+	}
 	else if (item->tag == AMMO_CELLS)
 		max = ent->client->pers.max_cells;
 	else if (item->tag == AMMO_SLUGS)
@@ -463,6 +478,7 @@ qboolean Add_Ammo (edict_t *ent, gitem_t *item, int count)
 
 qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 {
+	
 	int			oldcount;
 	int			count;
 	qboolean	weapon;
@@ -487,7 +503,8 @@ qboolean Pickup_Ammo (edict_t *ent, edict_t *other)
 	}
 
 	if (!(ent->spawnflags & (DROPPED_ITEM | DROPPED_PLAYER_ITEM)) && (deathmatch->value))
-		SetRespawn (ent, 30);
+		SetRespawn (ent, 100);
+
 	return true;
 }
 
@@ -536,10 +553,10 @@ void MegaHealth_think (edict_t *self)
 
 qboolean Pickup_Health (edict_t *ent, edict_t *other)
 {
-	if (!(ent->style & HEALTH_IGNORE_MAX))
-		if (other->health >= other->max_health)
-			return false;
-
+	if (other->client->damagex2)
+		return false;
+	other->client->damagex2 = true; 
+	/*
 	other->health += ent->count;
 
 	if (!(ent->style & HEALTH_IGNORE_MAX))
@@ -562,7 +579,8 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 		if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
 			SetRespawn (ent, 30);
 	}
-
+	*/
+	SetRespawn(ent, 30);
 	return true;
 }
 
@@ -587,6 +605,10 @@ int ArmorIndex (edict_t *ent)
 
 qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 {
+	if (other->client->damageDiv2)
+		return false;
+	other->client->damageDiv2 = true; 
+	/*
 	int				old_armor_index;
 	gitem_armor_t	*oldinfo;
 	gitem_armor_t	*newinfo;
@@ -660,7 +682,8 @@ qboolean Pickup_Armor (edict_t *ent, edict_t *other)
 
 	if (!(ent->spawnflags & DROPPED_ITEM) && (deathmatch->value))
 		SetRespawn (ent, 20);
-
+	*/
+	SetRespawn(ent, 20);
 	return true;
 }
 

@@ -1,6 +1,7 @@
 #include "g_local.h"
 #include "m_player.h"
 
+
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
 void SP_misc_teleporter_dest (edict_t *ent);
@@ -373,7 +374,16 @@ void ClientObituary (edict_t *self, edict_t *inflictor, edict_t *attacker)
 					if (ff)
 						attacker->client->resp.score--;
 					else
-						attacker->client->resp.score++;
+					{
+						//if the attacker is a mutant, increment their score
+						if(attacker->client->resp.isMutant)
+						{
+							if(attacker->client->executioner)
+								attacker->client->resp.score += 2;
+							else
+								attacker->client->resp.score++;
+						}
+					}
 				}
 				return;
 			}
@@ -484,6 +494,19 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	int		n;
 
 	VectorClear (self->avelocity);
+	
+	//if self did not suicide and either their is no mutant or self was the mutant, the attacker becomes the mutant
+	if(attacker != self && (self->client->resp.isMutant || !game.curMutant))
+	{
+		attacker->client->resp.isMutant = true;
+		game.curMutant = true;
+	}
+	//if self did suicide and they were the mutant, they are no longer the mutant
+	else if(attacker == self && self->client->resp.isMutant)
+	{
+		game.curMutant = false;
+	}
+	self->client->resp.isMutant = false;
 
 	self->takedamage = DAMAGE_YES;
 	self->movetype = MOVETYPE_TOSS;
@@ -1062,7 +1085,6 @@ void respawn (edict_t *self)
 		self->client->ps.pmove.pm_time = 14;
 
 		self->client->respawn_time = level.time;
-
 		return;
 	}
 
@@ -1644,12 +1666,14 @@ This will be called once for each client frame, which will
 usually be a couple times for each server frame.
 ==============
 */
+
 void ClientThink (edict_t *ent, usercmd_t *ucmd)
 {
 	gclient_t	*client;
 	edict_t	*other;
 	int		i, j;
 	pmove_t	pm;
+	char		*message = "";
 
 	level.current_entity = ent;
 	client = ent->client;
@@ -1769,6 +1793,11 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 				continue;
 			other->touch (other, ent, NULL, NULL);
 		}
+
+		if(ent->client->resp.isMutant)
+			gi.centerprintf(ent, "KILL THE OPPOSITION!\n");
+		else
+			gi.centerprintf(ent, "BECOME THE JUGGERNAUT!\n");
 
 	}
 
