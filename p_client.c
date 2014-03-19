@@ -1797,7 +1797,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		if(ent->client->resp.isMutant)
 			gi.centerprintf(ent, "KILL THE OPPOSITION!\n");
 		else
-			gi.centerprintf(ent, "BECOME THE JUGGERNAUT!\n");
+			gi.centerprintf(ent, "BECOME THE MUTANT!\n");
 
 	}
 
