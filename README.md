@@ -28,7 +28,7 @@ Each player/client will start out with each weapon except the BFG10K. The ammuni
                            jam, the animation will play, but the bullets will not be fired. The super shotgun has a 
                            higher probability of jamming.
                            
-(Note: Grenade Launcher and Grenades have been removed from the weapons list in order to allow the powerups to work 
+(Note: Grenade Launcher and Grenades have been removed from the weapons mod list in order to allow the powerups to work 
   properly.)
 
 Power-Up Modifications:
@@ -51,4 +51,10 @@ The new gamemode that has been created is a variation of the mutant game type. I
 not a mutant, but after somebody has claimed first blood, they will become the mutant (indicated by a blue glow). From
 that point, the only way to increase your score is to either kill the mutant or get kills as the mutant. A non mutant
 killing a non mutant will not grant a score increase (unless there is no mutants currently). Mutants have access to 
-a one hit kill powerup, which will help them fend of the onslaught of players trying to claim their life.
+a one hit kill powerup, which will help them fend of the onslaught of players trying to claim their life. The game is
+still relative to deathmatch, except with this new rule implemented. 
+
+In order to play this game fully, you will need at least three players. You can play with two, but you will only be
+trading kills back and forth between the mutant and nonmutant. All of the weapons are initialized to keys 1-9.
+
+Good luck and enjoy the game!
